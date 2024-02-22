@@ -1,0 +1,23 @@
+the website should have a sign up page for farmers to register themselves
+-> name
+-> Address
+-> phone number
+
+signup page -> dashboard -> add_products ->
+. Crop name (ready to sell)
+. Crop quantity (ready to sell)
+
+ADD CROP DETAILS: that the farmer is producing
+. duration of crop yield: enter start month and end month and enter the crop name that will be yielded in this time. 
+
+
+
+sign up page for customers , retailers and vegetable shop owners
+-> name
+-> phone number
+-> Address
+
+signup -> farmers page -> list of all the farmers (farmer name , state location , harvest photo , harverst quantity available for readily sale)
+
+a button side present side of each farmer-> navigate to another page (show the particular farmer details -> name , address , phone no)
+

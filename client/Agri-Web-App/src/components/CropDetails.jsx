@@ -12,7 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,13 +32,39 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function CropDetails() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate()
+  const [nameOfcrop, setnameOfcrop] = useState("")
+  const [startMonth , setstartMonth] = useState("")
+  const [endMonth, setendMonth] = useState("")
+  const [email , setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const handleSubmit = async(event) => {
+    const requestBody = {
+      nameOfcrop,
+      startMonth,
+      endMonth,
+      email,
+      password
+    }
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/farmer/cropdetails',{
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json" 
+        },
+        body:JSON.stringify(requestBody)
+      })
+      if(!response.ok){
+        throw new Error('Network response was not ok')
+      }
+      const data = await response.json()
+      console.log(data);
+      navigate('/uploadCrop')
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+    
   };
 
   return (
@@ -60,8 +87,37 @@ export default function CropDetails() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <TextField
+                  onChange={(e)=>{
+                    setEmail(e.target.value)
+                  }}
+                  required
+                  fullWidth
+                  id="email"
+                  label="Enter Email"
+                  name="email"
+                  autoComplete="family-name"
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
+                  onChange={(e)=>{
+                    setPassword(e.target.value)
+                  }}
+                  required
+                  fullWidth
+                  id="password"
+                  label="Enter Password"
+                  name="password"
+                  autoComplete="family-name"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  onChange={(e)=>{
+                    setnameOfcrop(e.target.value)
+                  }}
                   required
                   fullWidth
                   id="CropName"
@@ -72,6 +128,9 @@ export default function CropDetails() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  onChange={(e)=>{
+                    setstartMonth(e.target.value)
+                  }}
                   required
                   fullWidth
                   id="startmonth"
@@ -80,6 +139,9 @@ export default function CropDetails() {
                   autoComplete="startmonth"
                 />
                  <TextField
+                 onChange={(e)=>{
+                  setendMonth(e.target.value)
+                 }}
                   required
                   fullWidth
                   id="endmonth"
@@ -100,6 +162,7 @@ export default function CropDetails() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit}
             >
               Submit
             </Button>

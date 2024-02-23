@@ -12,6 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -31,15 +33,42 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
+  const [email , setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [data , setData] = useState("")
+  const navigate = useNavigate()
+  const requestBody = {
+    email,
+    password
+  }
+  // const handleClick = (farmerId)=>{
+  //   navigate(`/profile/${farmerId}`)
+  // }
+  const handleClick = async({event, farmerId}) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/farmer/signin',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(requestBody)
+      })
+      if(!response.ok){
+        throw new Error('Network issue')
+      }
+      const json = await response.json()
+      console.log(json);
+      console.log(json.userId);
+      setData(json.userId)
+      navigate(`/profile/${json.userId}`)
+    
+      
+      //navigate('/farmers')
+    } catch (error) {
+      console.log(error);
+    }
   };
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -74,7 +103,7 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -84,6 +113,9 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e)=>{
+                  setEmail(e.target.value)
+                }}
               />
               <TextField
                 margin="normal"
@@ -94,6 +126,9 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e)=>{
+                  setPassword(e.target.value)
+                }}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -104,6 +139,9 @@ export default function SignInSide() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={(event)=>{
+                  handleClick({event, data})
+                }}
               >
                 Sign In
               </Button>

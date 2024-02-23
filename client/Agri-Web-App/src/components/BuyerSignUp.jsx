@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -31,13 +32,36 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function BuyerSignUp() {
-  const handleSubmit = (event) => {
+  const [email , setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
+  const [phoneno , setPhoneno] = React.useState("")
+  const [address, setAddress] = React.useState("")
+  const [username, setUsername] = React.useState("")
+  const navigate = useNavigate()
+  const requestBody = {
+    email,
+    password,
+    phoneno,
+    address,
+    username
+  }
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/buyer/signup',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      })
+      if(!response.ok){
+        throw new Error('Network issue occurred')
+      }
+      navigate('/farmers')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -84,6 +108,22 @@ export default function BuyerSignUp() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e)=>{
+                  setEmail(e.target.value)
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="usename"
+                label="Enter Username"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                onChange={(e)=>{
+                  setUsername(e.target.value)
+                }}
               />
                <TextField
                 margin="normal"
@@ -94,6 +134,9 @@ export default function BuyerSignUp() {
                 name="Address"
                 autoComplete="Address"
                 autoFocus
+                onChange={(e)=>{
+                  setAddress(e.target.value)
+                }}
               />
                <TextField
                 margin="normal"
@@ -104,6 +147,9 @@ export default function BuyerSignUp() {
                 name="PhoneNumber"
                 autoComplete="PhoneNumber"
                 autoFocus
+                onChange={(e)=>{
+                  setPhoneno(e.target.value)
+                }}
               />
               <TextField
                 margin="normal"
@@ -114,6 +160,9 @@ export default function BuyerSignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e)=>{
+                  setPassword(e.target.value)
+                }}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

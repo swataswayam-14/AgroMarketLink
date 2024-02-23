@@ -63,7 +63,7 @@ BuyerRouter.post('/signup',async(req,res)=>{
 })
 
 const signInObject = zod.object({
-    username:zod.string(),
+    email:zod.string().email(),
     password:zod.string()
 })
 
@@ -74,11 +74,11 @@ BuyerRouter.post('/signin',async(req,res)=>{
             message:'Incorrect inputs'
         })
     }
-    const username = req.body.username
+    const email = req.body.email
     const password = req.body.password
 
     const buyer = await Buyer.findOne({
-        username,
+        email,
         password
     })
     if(buyer){
@@ -108,7 +108,8 @@ BuyerRouter.get('/bulk', async(req,res)=>{
             farmers: farmers.map(farmer =>({
                 username:farmer.username,
                 phoneno: farmer.phoneno,
-                address: farmer.address
+                address: farmer.address,
+                _id:farmer._id
             }))
         })
     }catch(e){
@@ -116,6 +117,47 @@ BuyerRouter.get('/bulk', async(req,res)=>{
     }
    
 })
+BuyerRouter.get(`/:id`, async(req,res)=>{
+    try {
+        const farmer = await Farmer.findOne({
+            _id:req.params.id
+        })
+        if(farmer){
+            const cropDetails = await Crop.find({
+                userId: req.params.id
+            })
+            if(cropDetails){
+                return res.json({
+                    crop: cropDetails.map(crop =>({
+                        nameOfCrop: crop.nameOfcrop,
+                        startMonth: crop.startMonth,
+                        endMonth:crop.endMonth
+                    })),
+                    farmer:{
+                        username:farmer.username,
+                        address:farmer.address,
+                        phoneNumber:farmer.phoneno
+                    }
+                })
+            }else{
+                return res.json({
+                    msg:'Crop details not found'
+                })
+            }
+        }else{
+            return res.json({
+                msg:'Farmer not found'
+            })
+        }
+    } catch (error) {
+        return res.json({
+            msg:'There is some problem, please try again later'
+        })
+    }
+})
+
+
+
 
 
 module.exports = BuyerRouter

@@ -83,11 +83,11 @@ const CropSchema = new mongoose.Schema({
         trim:true
     },
     startMonth:{
-        type: Number,
+        type: String,
         required:true
     },
     endMonth:{
-        type:Number,
+        type:String,
         required:true
     }
 })

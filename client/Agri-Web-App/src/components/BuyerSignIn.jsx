@@ -12,7 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,13 +32,30 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function BuyerInSide() {
-  const handleSubmit = (event) => {
+  const [email , setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const requestBody = {
+    email,
+    password
+  }
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/buyer/signin',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(requestBody)
+      })
+      if(!response.ok){
+        throw new Error('Network issue')
+      }
+      navigate('/farmers')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -84,6 +102,9 @@ export default function BuyerInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e)=>{
+                  setEmail(e.target.value)
+                }}
               />
               <TextField
                 margin="normal"
@@ -94,6 +115,9 @@ export default function BuyerInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e)=>{
+                  setPassword(e.target.value)
+                }}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

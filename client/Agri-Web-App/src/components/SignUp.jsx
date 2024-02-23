@@ -12,6 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -31,13 +33,36 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUpSide() {
-  const handleSubmit = (event) => {
+  const [email , setEmail] = useState("")
+  const [address, setAddress] = useState("")
+  const [phoneno, setPhoneno] = useState("")
+  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("")
+  const navigate = useNavigate()
+  const requestBody = {
+    email,
+    address,
+    phoneno,
+    password,
+    username
+  }
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/farmer/signup',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(requestBody)
+      })
+      if(!response.ok){
+        throw new Error('Network issue')
+      }
+      navigate('/farmers')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -84,6 +109,22 @@ export default function SignUpSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e)=>{
+                  setEmail(e.target.value)
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="User Name"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                onChange={(e)=>{
+                  setUsername(e.target.value)
+                }}
               />
                <TextField
                 margin="normal"
@@ -94,6 +135,9 @@ export default function SignUpSide() {
                 name="Address"
                 autoComplete="Address"
                 autoFocus
+                onChange={(e)=>{
+                  setAddress(e.target.value)
+                }}
               />
                <TextField
                 margin="normal"
@@ -104,6 +148,9 @@ export default function SignUpSide() {
                 name="PhoneNumber"
                 autoComplete="PhoneNumber"
                 autoFocus
+                onChange={(e)=>{
+                  setPhoneno(e.target.value)
+                }}
               />
               <TextField
                 margin="normal"
@@ -114,6 +161,9 @@ export default function SignUpSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e)=>{
+                  setPassword(e.target.value)
+                }}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

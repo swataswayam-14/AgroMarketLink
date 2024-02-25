@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import "./FarmerDetails.css"
-
-
 const ButtonContainer = styled.div`
 display: flex;
 justify-content: space-around; /* Space evenly instead of stretching */
@@ -28,29 +25,29 @@ transition: all 0.3s ease-in-out;
 }
 `;
 
+function BuyerProfile({ match }) {
 
 
-function FarmerProfile({ match }) {
   const classes = 'farmer-detail container';
   const { id } = useParams()
-  const [farmerData, setFarmerData] = useState({});
+  const [buyerData, setBuyerData] = useState({});
   const navigate = useNavigate()
 
   useEffect(() => {
-    async function fetchFarmerData() {
+    async function fetchBuyerData() {
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/farmer/profile/${id}`);
+        const response = await fetch(`http://localhost:3000/api/v1/buyer/profile/${id}`);
         if (!response.ok) throw Error("Failed to fetch farmer data");
         const jsonResponse = await response.json();
-        setFarmerData(jsonResponse.farmer);
+        setBuyerData(jsonResponse.buyer);
       } catch (error) {
         console.log(error);
       }
     }
-    fetchFarmerData();
+    fetchBuyerData();
   }, [id]);
 
-  if (!farmerData) return null;
+  if (!buyerData) return null;
 
   return (
     <div className={classes}>
@@ -61,24 +58,18 @@ function FarmerProfile({ match }) {
        <section className='details'>
          <h2>Account info</h2>
          <ul>
-           <li><strong>Username:</strong> {farmerData.username}</li>
-           <li><strong>Address:</strong> {farmerData.address}</li>
-           <li><strong>Phone Number:</strong> {farmerData.phoneno}</li>
+           <li><strong>Username:</strong> {buyerData.username}</li>
+           <li><strong>Address:</strong> {buyerData.address}</li>
+           <li><strong>Phone Number:</strong> {buyerData.phoneno}</li>
          </ul>
-         <ButtonContainer>
-          <Button onClick={()=>{
-              navigate(`/uploadCrop/${id}`)
-          }}>Upload Ready to sell crop</Button>
-          <Button onClick={()=>{
-            navigate(`/cropdetails/${id}`)
-          }} >Add Crop details</Button>
-          <Button onClick={()=>{
-            navigate(`/editaccount/${id}`)
-          }} >Edit Account Info</Button>
-          <Button onClick={()=>{
-            navigate(`/farmercrop/${id}`)
-          }} >See Crop Details</Button>
-        </ButtonContainer>
+        <ButtonContainer>
+        <Button onClick={()=>{
+            navigate('/farmers')
+        }}>See Farmer Details</Button>
+        <Button onClick={()=>{
+          navigate(`/editbuyer/${id}`)
+        }}>Edit Account Info</Button>
+      </ButtonContainer>
        </section>
 
        <hr />
@@ -90,4 +81,4 @@ function FarmerProfile({ match }) {
   );
 }
 
-export default FarmerProfile;
+export default BuyerProfile

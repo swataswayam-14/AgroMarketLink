@@ -53,7 +53,8 @@ BuyerRouter.post('/signup',async(req,res)=>{
         return res.json({
             message:'Buyer account created successfully',
             token:token,
-            buyer:buyer.username
+            buyer:buyer.username,
+            userId:buyer._id
         })
     }catch(e){
         return res.json({
@@ -61,6 +62,57 @@ BuyerRouter.post('/signup',async(req,res)=>{
         })
     }  
 })
+
+
+BuyerRouter.get('/profile/:id', async(req,res)=>{
+    const userId = req.params.id
+    const buyer = await Buyer.findById(userId)
+    console.log(buyer);
+    if(buyer){
+        return res.json({
+            buyer: buyer
+        })
+    }else{
+        return res.json({
+            msg:'The buyer does not exists'
+        })
+    }
+})
+
+const updatedBody = zod.object({
+    username:zod.string().optional(),
+    password:zod.string().optional(),
+    phoneno:zod.string().optional()
+})
+
+BuyerRouter.post('/updateaccount/:id', async(req,res)=>{
+    const {success} = updatedBody.safeParse(req.body)
+    if(!success){
+        res.status(411).json({
+            message:'Incorrect inputs'
+        })
+    }
+    const id = req.params.id
+    try {
+        const buyer = await Buyer.findByIdAndUpdate(id, req.body, { new: true });
+        if(buyer){
+            return res.json({
+                buyer
+            })
+        }else{
+            return res.json({
+                msg:'There is some error , try again later'
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            msg:'There is some error , try again later'
+        })
+    }
+
+})
+
 
 const signInObject = zod.object({
     email:zod.string().email(),
@@ -89,7 +141,8 @@ BuyerRouter.post('/signin',async(req,res)=>{
     
         res.status(200).json({
             token:token,
-            buyer:buyer.username
+            buyer:buyer.username,
+            userId:buyer._id
         })
         return
     }
@@ -100,6 +153,19 @@ BuyerRouter.post('/signin',async(req,res)=>{
 })
 
 
+BuyerRouter.get('/profile/:id', async(req,res)=>{
+    const id = req.params.id
+    const buyer = await Buyer.findById(id)
+    if(buyer){
+        return res.json({
+            buyer: buyer
+        })
+    }else{
+        return res.json({
+            msg:'There is some problem , try agin later'
+        })
+    }
+})
 
 BuyerRouter.get('/bulk', async(req,res)=>{
     try{

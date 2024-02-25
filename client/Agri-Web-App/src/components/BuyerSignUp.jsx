@@ -58,7 +58,9 @@ export default function BuyerSignUp() {
       if(!response.ok){
         throw new Error('Network issue occurred')
       }
-      navigate('/farmers')
+      const json = await response.json()
+      const id = json.userId
+      navigate(`/buyer/${id}`)
     } catch (error) {
       console.log(error);
     }

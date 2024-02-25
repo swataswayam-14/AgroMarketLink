@@ -60,8 +60,9 @@ export default function SignInSide() {
       const json = await response.json()
       console.log(json);
       console.log(json.userId);
+      const id = json.userId
       setData(json.userId)
-      navigate(`/profile/${json.userId}`)
+      navigate(`/profile/${id}`)
     
       
       //navigate('/farmers')

@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -36,19 +36,16 @@ export default function CropDetails() {
   const [nameOfcrop, setnameOfcrop] = useState("")
   const [startMonth , setstartMonth] = useState("")
   const [endMonth, setendMonth] = useState("")
-  const [email , setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const {id} = useParams()
   const handleSubmit = async(event) => {
+    event.preventDefault();
     const requestBody = {
       nameOfcrop,
       startMonth,
-      endMonth,
-      email,
-      password
+      endMonth
     }
-    event.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/api/v1/farmer/cropdetails',{
+      const response = await fetch(`http://localhost:3000/api/v1/farmer/cropdetails/${id}`,{
         method:"POST",
         headers: {
           "Content-Type": "application/json" 
@@ -60,7 +57,7 @@ export default function CropDetails() {
       }
       const data = await response.json()
       console.log(data);
-      navigate('/uploadCrop')
+      navigate(`/farmercrop/${id}`)
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
@@ -87,32 +84,6 @@ export default function CropDetails() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <TextField
-                  onChange={(e)=>{
-                    setEmail(e.target.value)
-                  }}
-                  required
-                  fullWidth
-                  id="email"
-                  label="Enter Email"
-                  name="email"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  onChange={(e)=>{
-                    setPassword(e.target.value)
-                  }}
-                  required
-                  fullWidth
-                  id="password"
-                  label="Enter Password"
-                  name="password"
-                  autoComplete="family-name"
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   onChange={(e)=>{

@@ -71,6 +71,27 @@ const BuyerSchema = new mongoose.Schema({
     }
 })
 
+const readyToSellCrops = new mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Farmer',
+        required:true
+    },
+    nameOfcrop:{
+        type:String,
+        required:true,
+        trim:true
+    },
+    pricePerKg:{
+        type:Number,
+        required:true
+    },
+    amountAvailable:{
+        type:Number,
+        required:true
+    }
+})
+
 const CropSchema = new mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -95,9 +116,10 @@ const CropSchema = new mongoose.Schema({
 const Farmer = mongoose.model('Farmer', FarmerSchema)
 const Crop = mongoose.model('Crop',CropSchema)
 const Buyer = mongoose.model('Buyer',BuyerSchema)
-
+const readyCrops = mongoose.model('readyToSellCrops', readyToSellCrops)
 module.exports = {
     Farmer,
     Crop,
-    Buyer
+    Buyer,
+    readyCrops
 }

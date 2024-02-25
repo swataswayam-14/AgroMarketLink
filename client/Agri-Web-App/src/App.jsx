@@ -12,6 +12,11 @@ import UploadCrop from './components/UploadCrop'
 import FarmersList from './components/FarmerList'
 import FarmerDetails from './components/FarmerDetails'
 import DashBoard from './components/DashBoard'
+import FarmerProfile from './components/FarmerProfile'
+import BuyerProfile from './components/BuyerProfile'
+import FarmerCrop from './components/FarmerCrop'
+import EditFarmerAccount from './components/EditFarmerAccount'
+import EditBuyerAccount from './components/EditBuyerProfile'
 
 function App() {
 
@@ -24,10 +29,15 @@ function App() {
         <Route path="/farmersignup" element={<SignUpSide/>}/>
         <Route path='/buyersignin' element={<BuyerInSide/>}/>
         <Route path='/buyersignup' element={<BuyerSignUp/>}/>
-        <Route path='/cropdetails' element={<CropDetails/>}/>
-        <Route path='/uploadCrop' element= {<UploadCrop/>}/>
+        <Route path='/cropdetails/:id' element={<CropDetails/>}/>
+        <Route path='/uploadCrop/:id' element= {<UploadCrop/>}/>
         <Route path='/farmers' element = {<FarmersList/>}/>
         <Route path='/farmers/:id' element={<FarmerDetails/>}/>
+        <Route path='/profile/:id' element={<FarmerProfile/>}/>
+        <Route path='/buyer/:id' element={<BuyerProfile/>}/>
+        <Route path='/farmercrop/:id' element={<FarmerCrop/>}/>
+        <Route path='/editaccount/:id' element={<EditFarmerAccount/>}/>
+        <Route path='/editbuyer/:id' element = {<EditBuyerAccount/>}/>
       </Routes>
     </Router>
   )

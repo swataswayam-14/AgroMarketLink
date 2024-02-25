@@ -59,7 +59,9 @@ export default function SignUpSide() {
       if(!response.ok){
         throw new Error('Network issue')
       }
-      navigate('/farmers')
+      const data = await response.json()
+
+      navigate(`/profile/${data.userId}`)
     } catch (error) {
       console.log(error);
     }

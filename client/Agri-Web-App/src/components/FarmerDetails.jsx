@@ -5,6 +5,7 @@ function FarmerDetails({ match }) {
   const classes = 'farmer-detail container';
   const { id } = useParams()
   const [farmerData, setFarmerData] = useState(null);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     async function fetchFarmerData() {
@@ -19,6 +20,14 @@ function FarmerDetails({ match }) {
     }
     fetchFarmerData();
   }, [id]);
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(`http://localhost:3000/api/v1/farmer/bulk/${id}`);
+      const json = await response.json();
+      setData(json);
+    }
+    fetchData();
+  }, []);
 
   if (!farmerData) return null;
 
@@ -53,6 +62,15 @@ function FarmerDetails({ match }) {
          ) : (
            <p>No crops available for this farmer.</p>
          )}
+         <h1>Ready to Sell</h1>
+      <ul>
+        {data.readyToSell &&
+          data.readyToSell.map((crop) => (
+            <li key={crop._id} style={{ marginBottom: '10px' }}>
+              {crop.nameOfcrop} ({crop.amountAvailable} kg available at {crop.pricePerKg} per kg)
+            </li>
+          ))}
+      </ul>
        </section>
 
        <nav>

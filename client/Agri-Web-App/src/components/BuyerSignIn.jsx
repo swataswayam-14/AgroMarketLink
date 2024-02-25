@@ -52,7 +52,10 @@ export default function BuyerInSide() {
       if(!response.ok){
         throw new Error('Network issue')
       }
-      navigate('/farmers')
+      const json = await response.json()
+      const id = json.userId
+      navigate(`/buyer/${id}`)
+      //navigate('/farmers')
     } catch (error) {
       console.log(error);
     }

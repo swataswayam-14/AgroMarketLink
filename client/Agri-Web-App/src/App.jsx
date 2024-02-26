@@ -17,6 +17,8 @@ import BuyerProfile from './components/BuyerProfile'
 import FarmerCrop from './components/FarmerCrop'
 import EditFarmerAccount from './components/EditFarmerAccount'
 import EditBuyerAccount from './components/EditBuyerProfile'
+import DeleteCurrent from './components/DeleteCurrent'
+
 
 function App() {
 
@@ -38,6 +40,7 @@ function App() {
         <Route path='/farmercrop/:id' element={<FarmerCrop/>}/>
         <Route path='/editaccount/:id' element={<EditFarmerAccount/>}/>
         <Route path='/editbuyer/:id' element = {<EditBuyerAccount/>}/>
+        <Route path='/deletecurrent/:id' element={<DeleteCurrent/>}/>
       </Routes>
     </Router>
   )

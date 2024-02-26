@@ -194,7 +194,8 @@ FarmerRouter.get('/bulk/:id', async(req,res)=>{
                 readyToSell: allReadyCrops.map(crop=>({
                     nameOfcrop: crop.nameOfcrop,
                     amountAvailable: crop.amountAvailable,
-                    pricePerKg: crop.pricePerKg
+                    pricePerKg: crop.pricePerKg,
+                    _id:crop._id
                 }))
             })
     }catch(e){
@@ -280,39 +281,29 @@ FarmerRouter.put('/',authMiddleWare, async(req,res)=>{
     }
 })
 
-FarmerRouter.post('/editfuturecrop/:id',async(req,res)=>{
+FarmerRouter.delete('/deletefuturecrop/:id',async(req,res)=>{
     const id = req.params.id
     try {
-        const crop = await Crop.findByIdAndUpdate(id, req.body, { new: true })
-        if(crop){
-            res.json({
-                msg:'Updated successfully'
-            })
-        }else{
-            return res.json({
-                msg:'Invalid inputs'
-            })
-        }
+        await Crop.findByIdAndDelete(id)
+        return res.status(200).json({
+            msg:'Delete success'
+        })
     } catch (error) {
-        return res.json({
+        return res.status(200).json({
             msg:'Network issue'
         })
     }
 })
 
-FarmerRouter.post('/editreadycrop/:id',async(req,res)=>{
+FarmerRouter.delete('/deletereadycrop/:id',async(req,res)=>{
     const id = req.params.id
+    console.log('delete to ready crop');
     try {
-        const crop = await readyCrops.findByIdAndUpdate(id, req.body, { new: true })
-        if(crop){
-            res.json({
-                msg:'Updated successfully'
-            })
-        }else{
-            return res.json({
-                msg:'Invalid inputs'
-            })
-        }
+        const crop = await readyCrops.findByIdAndDelete(id)
+        console.log('deleted '+crop);
+        return res.json({
+            msg:'Delete successfull'
+        })
     } catch (error) {
         return res.json({
             msg:'Network issue'

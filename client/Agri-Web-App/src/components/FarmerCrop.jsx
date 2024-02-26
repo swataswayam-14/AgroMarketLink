@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 function FarmerCrop() {
   const [data, setData] = useState([]);
   const {id} = useParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function fetchData() {
@@ -13,9 +15,6 @@ function FarmerCrop() {
     }
     fetchData();
   }, []);
-// the first button should navigate another page , to update the futureCrop details. And updation should happen by making a POST request to /editfuturecrop/:id end point. 
-
-//the second button should navigate to another page , to update the ready to sell crop details . And updation should happend by making a POST request to /editreadycrop/:id end point.
   return (
     <div>
       <h1>Crops</h1>
@@ -24,7 +23,14 @@ function FarmerCrop() {
           data.crop.map((crop) => (
             <li key={crop._id} style={{ marginBottom: '10px' }}>
               {crop.nameOfcrop} ({crop.startmonth} - {crop.endmonth})
-              <button style={{ backgroundColor: 'lightgray', padding: '5px', marginLeft: '10px', color:'black' }}>Edit details</button>
+              <button onClick={async()=>{
+                  try {
+                    const response = await axios.delete(`http://localhost:3000/api/v1/farmer/deletefuturecrop/${crop._id}`);
+                  } catch (err) {
+                    console.error("Error deleting ready crop:", err);
+                  }
+                  navigate(`/deletecurrent/${id}`)
+              }} style={{ backgroundColor: 'lightgray', padding: '5px', marginLeft: '10px', color:'black' }}>Delete</button>
             </li>
           ))}
       </ul>
@@ -34,7 +40,14 @@ function FarmerCrop() {
           data.readyToSell.map((crop) => (
             <li key={crop._id} style={{ marginBottom: '10px' }}>
               {crop.nameOfcrop} ({crop.amountAvailable} kg available at {crop.pricePerKg} per kg)
-              <button style={{ backgroundColor: 'lightgray', padding: '5px', marginLeft: '10px', color:'black' }}>Edit details</button>
+              <button onClick = {async()=>{
+                try {
+                  const response = await axios.delete(`http://localhost:3000/api/v1/farmer/deletereadycrop/${crop._id}`);
+                } catch (err) {
+                  console.error("Error deleting future crop:", err);
+                }
+                navigate(`/deletecurrent/${id}`)
+              }} style={{ backgroundColor: 'lightgray', padding: '5px', marginLeft: '10px', color:'black' }}>Delete</button>
             </li>
           ))}
       </ul>

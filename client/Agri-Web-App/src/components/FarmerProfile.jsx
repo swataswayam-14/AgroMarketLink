@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import "./FarmerDetails.css"
+// import "./FarmerDetails.css"
 
 
 const ButtonContainer = styled.div`
@@ -22,9 +22,14 @@ padding: 10px 20px; /* Increase padding for larger buttons */
 font-size: 14px; /* Increase font size for better visibility */
 cursor: pointer;
 transition: all 0.3s ease-in-out;
-
 &:hover {
-  background-color: #3e8e41;
+  transform: scale(1.05);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+};
+
+background-color: #69B3A2;
+&:hover {
+  background-color: #4E9D86;
 }
 `;
 
@@ -55,10 +60,10 @@ function FarmerProfile({ match }) {
   return (
     <div className={classes}>
      <header className='page-header'>
-       <h1>Your Account Details</h1>
+       <h1 style={{color:'green'}}>Your Account Details</h1>
      </header>
      <main>
-       <section className='details'>
+       <section className='details' style={{ maxWidth: '80%', margin: 'auto' }}>
          <h2>Account info</h2>
          <ul>
            <li><strong>Username:</strong> {farmerData.username}</li>

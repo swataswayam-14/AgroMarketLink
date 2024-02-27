@@ -19,11 +19,17 @@ padding: 10px 20px; /* Increase padding for larger buttons */
 font-size: 14px; /* Increase font size for better visibility */
 cursor: pointer;
 transition: all 0.3s ease-in-out;
-
 &:hover {
-  background-color: #3e8e41;
+  transform: scale(1.05);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+};
+
+background-color: #69B3A2;
+&:hover {
+  background-color: #4E9D86;
 }
 `;
+
 
 function BuyerProfile({ match }) {
 

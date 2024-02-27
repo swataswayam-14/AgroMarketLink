@@ -36,10 +36,6 @@ const UploadCrop = () => {
 
   return (
     <div>
-      <header>
-        <button className="dashboard-button">Go to Dashboard</button>
-        <button className="logout-button">Logout</button>
-      </header>
       <main>
         <section className="image-container">
           <img className="product-image" src="default-image.jpg" alt="Product Image" />

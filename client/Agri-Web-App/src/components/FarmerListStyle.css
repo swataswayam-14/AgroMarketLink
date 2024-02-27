@@ -1,17 +1,17 @@
 .farmers-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    grid-gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .farmer-card {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    padding: 20px;
+    padding: 40px;
 }
 .see-details-btn {
-    background: linear-gradient(to bottom, #ff8a00, #e52e71);
+    background: linear-gradient(to bottom, #55bb07, #2ee546);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -31,6 +31,6 @@
   }
   
   .farmer-card:hover .see-details-btn {
-    background: linear-gradient(to bottom, #e52e71, #ff8a00);
+    background: linear-gradient(to bottom, hsl(85, 78%, 54%), #00ff22);
   }
 

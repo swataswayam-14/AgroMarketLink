@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './FarmerListStyle.css';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem; /* Adjust this value based on design preferences */
+`;
 
+const StyledH1 = styled.h1`
+  font-size: 5rem; /* Adjust this value based on design preferences */
+  color: green; /* Change this color according to your desired palette */
+  font-weight: bold;
+`;
 function FarmersList() {
   const navigate = useNavigate()
   const [farmers, setFarmers] = useState([]);
@@ -20,10 +31,15 @@ function FarmersList() {
   };
 
   return (
+    <div>
+      <TitleContainer>
+        <StyledH1>Farmer&apos;s List</StyledH1>
+      </TitleContainer>
     <div className="farmers-list">
       {farmers.map((farmer) => (
         <FarmerCard key={farmer._id} farmer={farmer} handleSeeDetailsClick={handleSeeDetailsClick} />
       ))}
+    </div>
     </div>
   );
 }

@@ -13,6 +13,10 @@ const fadeIn = keyframes`
   }
 `;
 
+const Body = styled.div`
+  background-image:  url("https://cdn.pixabay.com/photo/2014/11/26/15/33/man-546322_1280.jpg");
+`
+//background-image: url("https://source.unsplash.com/1600x900?farmer");
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -73,10 +77,12 @@ const DashBoard = () => {
   const handleFarmerSignUp = () => {
     navigate('/farmersignup');
   };
-  const agroImage = 'backgroundImage.jpg'
+  const agroImage = './backgroundImage.jpg'
   return (
+    <Body>
     <div className="container" style={{ backgroundImage: `url('${agroImage}')` }}>
       {/* Your remaining content goes here */}
+
     <Container>
       <ButtonContainer>
         <Button onClick={handleBuyerSignIn}>Buyer Sign In</Button>
@@ -94,6 +100,7 @@ const DashBoard = () => {
       </Copyright>
     </Container>
     </div>
+    </Body>
   );
 };
 

@@ -34,7 +34,7 @@ function FarmerDetails({ match }) {
   return (
     <div className={classes}>
   <header className='page-header' style={{ backgroundColor: '#8db600', color: '#fff', padding: '1rem' }}>
-    <h1 style={{ fontSize: '2rem' }}>Farmers Detail Page</h1>
+    <h1 style={{ fontSize: '2rem' }}>Farmer's Detail</h1>
   </header>
   <main>
     <section className='details' style={{ border: '1px solid #8db600', padding: '1rem', margin: '1rem 0', backgroundColor: '#f9f9f9' }}>

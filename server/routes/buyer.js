@@ -65,16 +65,22 @@ BuyerRouter.post('/signup',async(req,res)=>{
 
 
 BuyerRouter.get('/profile/:id', async(req,res)=>{
-    const userId = req.params.id
-    const buyer = await Buyer.findById(userId)
-    console.log(buyer);
-    if(buyer){
+    try {
+        const userId = req.params.id
+        const buyer = await Buyer.findById(userId)
+        console.log(buyer);
+        if(buyer){
+            return res.json({
+                buyer: buyer
+            })
+        }else{
+            return res.json({
+                msg:'The buyer does not exists'
+            })
+        }
+    } catch (error) {
         return res.json({
-            buyer: buyer
-        })
-    }else{
-        return res.json({
-            msg:'The buyer does not exists'
+            msg:'Network issue, try later'
         })
     }
 })
@@ -86,9 +92,10 @@ const updatedBody = zod.object({
 })
 
 BuyerRouter.post('/updateaccount/:id', async(req,res)=>{
-    const {success} = updatedBody.safeParse(req.body)
+    try {
+        const {success} = updatedBody.safeParse(req.body)
     if(!success){
-        res.status(411).json({
+        return res.status(411).json({
             message:'Incorrect inputs'
         })
     }
@@ -110,6 +117,12 @@ BuyerRouter.post('/updateaccount/:id', async(req,res)=>{
             msg:'There is some error , try again later'
         })
     }
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            msg:'There is some error , try again later'
+        })
+    }
 
 })
 
@@ -120,47 +133,54 @@ const signInObject = zod.object({
 })
 
 BuyerRouter.post('/signin',async(req,res)=>{
-    const {success} = signInObject.safeParse(req.body)
-    if(!success){
-        res.status(411).json({
-            message:'Incorrect inputs'
-        })
-    }
-    const email = req.body.email
-    const password = req.body.password
-
-    const buyer = await Buyer.findOne({
-        email,
-        password
-    })
-    if(buyer){
-        const userId = buyer._id
-        const token = jwt.sign({
-            userId
-        },"secret")
+    try {
+        const {success} = signInObject.safeParse(req.body)
+        if(!success){
+            res.status(411).json({
+                message:'Incorrect inputs'
+            })
+        }
+        const email = req.body.email
+        const password = req.body.password
     
-        res.status(200).json({
-            token:token,
-            buyer:buyer.username,
-            userId:buyer._id
+        const buyer = await Buyer.findOne({
+            email,
+            password
         })
-        return
+        if(buyer){
+            const userId = buyer._id
+            const token = jwt.sign({
+                userId
+            },"secret")
+        
+            return res.status(200).json({
+                token:token,
+                buyer:buyer.username,
+                userId:buyer._id
+            })
+        }
+    } catch (error) {
+        return res.status(411).json({
+            message:'Error while logging in'
+        }) 
     }
-
-    res.status(411).json({
-        message:'Error while logging in'
-    })
 })
 
 
 BuyerRouter.get('/profile/:id', async(req,res)=>{
-    const id = req.params.id
-    const buyer = await Buyer.findById(id)
-    if(buyer){
-        return res.json({
-            buyer: buyer
-        })
-    }else{
+    try {
+        const id = req.params.id
+        const buyer = await Buyer.findById(id)
+        if(buyer){
+            return res.json({
+                buyer: buyer
+            })
+        }else{
+            return res.json({
+                msg:'There is some problem , try agin later'
+            })
+        }
+    } catch (error) {
         return res.json({
             msg:'There is some problem , try agin later'
         })

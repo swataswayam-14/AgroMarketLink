@@ -65,14 +65,14 @@ const updatedBody = zod.object({
 })
 
 FarmerRouter.post('/updateaccount/:id', async(req,res)=>{
-    const {success} = updatedBody.safeParse(req.body)
-    if(!success){
-        res.status(411).json({
-            message:'Incorrect inputs'
-        })
-    }
-    const id = req.params.id
     try {
+        const {success} = updatedBody.safeParse(req.body)
+        if(!success){
+            return res.status(411).json({
+                message:'Incorrect inputs'
+            })
+        }
+        const id = req.params.id
         const farmer = await Farmer.findByIdAndUpdate(id, req.body, { new: true });
         if(farmer){
             return res.json({
@@ -98,43 +98,44 @@ const signInObject = zod.object({
 })
 
 FarmerRouter.post('/signin',async(req,res)=>{
-    console.log('a sign in request');
-    const {success} = signInObject.safeParse(req.body)
-    if(!success){
-        res.status(411).json({
-            message:'Incorrect inputs'
-        })
-    }
-    const email = req.body.email
-    const password = req.body.password
-
-    const farmer = await Farmer.findOne({
-        email,
-        password
-    })
-    if(farmer){
-        const user_id = farmer._id
-        const token = jwt.sign({
-            user_id
-        },"secret")
+    try {
+        console.log('a sign in request');
+        const {success} = signInObject.safeParse(req.body)
+        if(!success){
+            res.status(411).json({
+                message:'Incorrect inputs'
+            })
+        }
+        const email = req.body.email
+        const password = req.body.password
     
-        res.status(200).json({
-            token:token,
-            farmer:farmer.username,
-            userId:farmer._id
+        const farmer = await Farmer.findOne({
+            email,
+            password
         })
-        return
+        if(farmer){
+            const user_id = farmer._id
+            const token = jwt.sign({
+                user_id
+            },"secret")
+        
+            return res.status(200).json({
+                token:token,
+                farmer:farmer.username,
+                userId:farmer._id
+            })
+        }
+    } catch (error) {
+        return res.status(411).json({
+            message:'Error while logging in'
+        })
     }
-
-    res.status(411).json({
-        message:'Error while logging in'
-    })
 })
 
 
 FarmerRouter.post('/readytosell/:id',async(req,res)=>{
-    const id = req.params.id
     try {
+        const id = req.params.id
         const farmer = await Farmer.findById(id)
         const {nameOfcrop, pricePerKg, amountAvailable} = req.body
         if(farmer){
@@ -169,9 +170,9 @@ FarmerRouter.post('/readytosell/:id',async(req,res)=>{
 
 
 FarmerRouter.get('/bulk/:id', async(req,res)=>{
-    const filter = req.query.filter || ""
-    const id = req.params.id
     try{
+        const filter = req.query.filter || ""
+        const id = req.params.id
             const allcrops = await Crop.find({
                 userId:id,
                 $or:[{
@@ -215,39 +216,45 @@ const cropBody = zod.object({
 
 //facing issue in adding crop details
 FarmerRouter.post('/cropdetails/:id', async(req,res)=>{
-    const id = req.params.id
-    const {success} = cropBody.safeParse(req.body)
-    if(!success){
-        return res.status(411).json({
-            msg:'Incorrect Inputs'
-        })
-    }
-    const farmer = await Farmer.findById(id)
-    if(farmer){
-        const nameOfcrop = req.body.nameOfcrop
-        const startMonth = req.body.startMonth
-        const endMonth = req.body.endMonth
-
-        const crop = await Crop.create({
-            userId:farmer._id,
-            nameOfcrop,
-            startMonth,
-            endMonth
-        })
-        if(crop){
-            return res.status(201).json({
-                msg:"The crop created successfully",
-                nameOfcrop:crop.nameOfcrop,
-                userId:id
-            })
-        }else{
-            return res.json({
-                msg:"There is some problem in adding crop details"
+    try {
+        const id = req.params.id
+        const {success} = cropBody.safeParse(req.body)
+        if(!success){
+            return res.status(411).json({
+                msg:'Incorrect Inputs'
             })
         }
-    }else{
+        const farmer = await Farmer.findById(id)
+        if(farmer){
+            const nameOfcrop = req.body.nameOfcrop
+            const startMonth = req.body.startMonth
+            const endMonth = req.body.endMonth
+    
+            const crop = await Crop.create({
+                userId:farmer._id,
+                nameOfcrop,
+                startMonth,
+                endMonth
+            })
+            if(crop){
+                return res.status(201).json({
+                    msg:"The crop created successfully",
+                    nameOfcrop:crop.nameOfcrop,
+                    userId:id
+                })
+            }else{
+                return res.json({
+                    msg:"There is some problem in adding crop details"
+                })
+            }
+        }else{
+            return res.status(411).json({
+                msg:'Invalid credentials'
+            })
+        }
+    } catch (error) {
         return res.status(411).json({
-            msg:'Invalid credentials'
+            msg:'Network issue , try again later'
         })
     }
 })
@@ -260,30 +267,30 @@ const updateBody = zod.object({
 
 //implement such that it is updated for only that specific farmer
 FarmerRouter.put('/',authMiddleWare, async(req,res)=>{
-    const {success} = updateBody.safeParse(req.body)
-    if(!success){
-        res.status(411).json({
-            message:'Error while updating information'
-        })
-    }
-    const userId = req.userId
     try{
+        const {success} = updateBody.safeParse(req.body)
+        if(!success){
+            return res.status(411).json({
+                message:'Error while updating information'
+            })
+        }
+        const userId = req.userId
         await Crop.findOneAndUpdate({
             nameOfcrop:req.body.nameOfcrop
         },req.body)
-        res.json({
+        return res.json({
             message:'Updated successfully'
         })
     }catch(e){
-        res.status(411).json({
+        return res.status(411).json({
             message:'Error while updating information'
         })
     }
 })
 
 FarmerRouter.delete('/deletefuturecrop/:id',async(req,res)=>{
-    const id = req.params.id
     try {
+        const id = req.params.id
         await Crop.findByIdAndDelete(id)
         return res.status(200).json({
             msg:'Delete success'
@@ -296,9 +303,9 @@ FarmerRouter.delete('/deletefuturecrop/:id',async(req,res)=>{
 })
 
 FarmerRouter.delete('/deletereadycrop/:id',async(req,res)=>{
-    const id = req.params.id
-    console.log('delete to ready crop');
     try {
+        const id = req.params.id
+        console.log('delete to ready crop');
         const crop = await readyCrops.findByIdAndDelete(id)
         console.log('deleted '+crop);
         return res.json({
@@ -312,16 +319,22 @@ FarmerRouter.delete('/deletereadycrop/:id',async(req,res)=>{
 })
 
 FarmerRouter.get('/profile/:id', async(req,res)=>{
-    const userId = req.params.id
-    const farmer = await Farmer.findById(userId)
-    console.log(farmer);
-    if(farmer){
+    try {
+        const userId = req.params.id
+        const farmer = await Farmer.findById(userId)
+        console.log(farmer);
+        if(farmer){
+            return res.json({
+                farmer: farmer
+            })
+        }else{
+            return res.json({
+                msg:'The farmer does not exists'
+            })
+        }
+    } catch (error) {
         return res.json({
-            farmer: farmer
-        })
-    }else{
-        return res.json({
-            msg:'The farmer does not exists'
+            msg:'Network issue, try again later'
         })
     }
 })
@@ -333,39 +346,33 @@ const readyCropBody = zod.object({
 })
 
 FarmerRouter.post('/getaccount', async(req,res)=>{
-    const email = req.body.email
-    const farmer = await Farmer.findOne({
-        email
-    })
-    if(farmer){
-        const crop = await Crop.find({
-            userId: farmer._id
+    try {
+        const email = req.body.email
+        const farmer = await Farmer.findOne({
+            email
         })
-        if(crop){
-            return res.json({
-                allCrops:crop
+        if(farmer){
+            const crop = await Crop.find({
+                userId: farmer._id
             })
+            if(crop){
+                return res.json({
+                    allCrops:crop
+                })
+            }else{
+                return res.json({
+                    msg:'You donot have any crops listed presently'
+                })
+            }
         }else{
             return res.json({
-                msg:'You donot have any crops listed presently'
+                msg:'Incorrect Credentials'
             })
         }
-    }else{
+    } catch (error) {
         return res.json({
-            msg:'Incorrect Credentials'
+            msg:'Network issue , try again later'
         })
     }
 })
-
-FarmerRouter.post('/readycrops', async(req,res)=>{
-    const {success} = readyCropBody.safeParse(req.body)
-    if(!success){
-        return res.status(411).json({
-            msg:"Incorrect inputs"
-        })
-    }
-
-})
-
-
 module.exports = FarmerRouter

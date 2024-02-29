@@ -14,7 +14,7 @@ function DeleteCurrent() {
             fontSize: "2rem",
             fontWeight: "bold"
         }}>
-            <div>Delete successfully</div>
+            <div>Deleted successfully</div>
             <div>
                 <button onClick={()=>{
                     navigate(`/farmercrop/${id}`)

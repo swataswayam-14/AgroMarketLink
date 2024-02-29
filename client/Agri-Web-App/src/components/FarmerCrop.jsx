@@ -39,7 +39,7 @@ function FarmerCrop() {
         {data.readyToSell &&
           data.readyToSell.map((crop) => (
             <li key={crop._id} style={{ marginBottom: '10px' }}>
-              {crop.nameOfcrop} ({crop.amountAvailable} kg available at {crop.pricePerKg} per kg)
+              {crop.nameOfcrop} ({crop.amountAvailable} kg available at Rs.{crop.pricePerKg} per kg)
               <button onClick = {async()=>{
                 try {
                   const response = await axios.delete(`http://localhost:3000/api/v1/farmer/deletereadycrop/${crop._id}`);
